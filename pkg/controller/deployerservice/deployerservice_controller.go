@@ -172,10 +172,7 @@ func newPodForCR(cr *deployerv1.DeployerService) *corev1.Pod {
 						Handler: corev1.Handler{
 							HTTPGet: &corev1.HTTPGetAction{
 								Path: "/health",
-								Port: intstr.IntOrString{
-									Type:   intstr.String,
-									StrVal: "9300",
-								},
+								Port: intstr.FromInt(9300),
 							},
 						},
 						InitialDelaySeconds: 30,
