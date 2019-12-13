@@ -3,5 +3,8 @@ kind: DeployerService
 metadata:
   name: example-deployerservice
 spec:
-  # Add fields here
-  size: 3
+  name: model-deployer
+  image: quay.io/dotmesh/dotscience-deployer:latest
+  gatewayAddress: cloud.dotscience.com:8800
+  token: 3ZZ7SY27OFICJHJWY57RHNXSMS7DUASWNCXBMPHX5QKX7KDZULKA====
+  serviceAccountName: dotscience-operator
