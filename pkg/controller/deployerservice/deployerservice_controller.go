@@ -2,7 +2,6 @@ package deployerservice
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	deployerv1 "github.com/dotmesh-io/dotscience-operator/pkg/apis/deployer/v1"
@@ -122,16 +121,16 @@ func (r *ReconcileDeployerService) Reconcile(request reconcile.Request) (reconci
 	found := &corev1.Pod{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
+
+		instance.Status.Status = deployerv1.DeployerPhaseCreating
+		if updateErr := r.client.Status().Update(context.Background(), instance); updateErr != nil {
+			reqLogger.Info("Failed to update status", "Error", err.Error())
+		}
+
 		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
 		err = r.client.Create(context.TODO(), pod)
 		if err != nil {
 			return reconcile.Result{}, err
-		}
-
-		instance.Status.Status = deployerv1.DeployerPhaseCreating
-
-		if updateErr := r.client.Status().Update(context.Background(), instance); updateErr != nil {
-			err = fmt.Errorf("%v, %v", updateErr, err)
 		}
 
 		return immediateRetryResult, nil
