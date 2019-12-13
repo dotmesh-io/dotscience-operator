@@ -9,6 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -141,11 +142,45 @@ func newPodForCR(cr *deployerv1.DeployerService) *corev1.Pod {
 			Labels:    labels,
 		},
 		Spec: corev1.PodSpec{
+			ServiceAccountName: cr.Spec.ServiceAccountName,
 			Containers: []corev1.Container{
 				{
-					Name:    "busybox",
-					Image:   "busybox",
-					Command: []string{"sleep", "3600"},
+					Name:    cr.Spec.Name,
+					Image:   cr.Spec.Image,
+					Command: []string{"ds-deployer", "run"},
+					Env: []corev1.EnvVar{
+						{
+							Name:  "GATEWAY_ADDRESS",
+							Value: cr.Spec.GatewayAddress,
+						},
+						{
+							Name:  "TOKEN",
+							Value: cr.Spec.Token,
+						},
+						{
+							Name:  "HEALTH_PORT",
+							Value: "9300",
+						},
+					},
+					// adding healthcheck port
+					Ports: []corev1.ContainerPort{
+						corev1.ContainerPort{
+							ContainerPort: 9300,
+						},
+					},
+					LivenessProbe: &corev1.Probe{
+						Handler: corev1.Handler{
+							HTTPGet: &corev1.HTTPGetAction{
+								Path: "/health",
+								Port: intstr.IntOrString{
+									Type:   intstr.String,
+									StrVal: "9300",
+								},
+							},
+						},
+						InitialDelaySeconds: 30,
+						TimeoutSeconds:      10,
+					},
 				},
 			},
 		},
