@@ -1,0 +1,7 @@
+apiVersion: deployer.dotscience.com/v1
+kind: DeployerService
+metadata:
+  name: example-deployerservice
+spec:
+  # Add fields here
+  size: 3
