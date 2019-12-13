@@ -15,7 +15,6 @@ spec:
       serviceAccountName: dotscience-operator
       containers:
         - name: dotscience-operator
-          # Replace this with the built image name
           image: quay.io/dotmesh/dotscience-operator:latest
           command:
           - dotscience-operator
@@ -31,3 +30,10 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "dotscience-operator"
+          resources:
+            limits:
+              cpu: 600m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
