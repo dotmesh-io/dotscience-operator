@@ -2,6 +2,8 @@ package deployerservice
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	deployerv1 "github.com/dotmesh-io/dotscience-operator/pkg/apis/deployer/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -87,6 +89,13 @@ func (r *ReconcileDeployerService) Reconcile(request reconcile.Request) (reconci
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
 	reqLogger.Info("Reconciling DeployerService")
 
+	reconcilePeriod := 10 * time.Second
+	reconcileResult := reconcile.Result{RequeueAfter: reconcilePeriod}
+
+	// Return this for a immediate retry of the reconciliation loop with the
+	// same request object.
+	immediateRetryResult := reconcile.Result{Requeue: true}
+
 	// Fetch the DeployerService instance
 	instance := &deployerv1.DeployerService{}
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
@@ -119,15 +128,27 @@ func (r *ReconcileDeployerService) Reconcile(request reconcile.Request) (reconci
 			return reconcile.Result{}, err
 		}
 
-		// Pod created successfully - don't requeue
-		return reconcile.Result{}, nil
+		instance.Status.Status = deployerv1.DeployerPhaseCreating
+
+		if updateErr := r.client.Status().Update(context.Background(), instance); updateErr != nil {
+			err = fmt.Errorf("%v, %v", updateErr, err)
+		}
+
+		return immediateRetryResult, nil
 	} else if err != nil {
+
 		return reconcile.Result{}, err
+	}
+
+	instance.Status.Status = deployerv1.DeployerPhaseRunning
+
+	if err := r.client.Status().Update(context.Background(), instance); err != nil {
+		return immediateRetryResult, err
 	}
 
 	// Pod already exists - don't requeue
 	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
-	return reconcile.Result{}, nil
+	return reconcileResult, nil
 }
 
 // newPodForCR returns a busybox pod with the same name/namespace as the cr
