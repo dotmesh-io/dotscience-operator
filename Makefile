@@ -1,5 +1,7 @@
 SDK_VERSION = v0.13.0
+GO_BUILD_CMD = go build
 GO_ENV = GOOS=linux CGO_ENABLED=0
+MACHINE = $(shell uname -m)
 OPERATOR_IMAGE ?= quay.io/dotmesh/dotscience-operator:dev
 
 .PHONY: image
@@ -25,6 +27,7 @@ operator-sdk:
 
 operator-image:
 	@echo "Building dotscience-operator"
+	# build/operator-sdk build $(OPERATOR_IMAGE)
 	$(GO_ENV) $(GO_BUILD_CMD) \
 		-o ./build/_output/bin/dotscience-operator \
 		./cmd/manager

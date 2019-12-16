@@ -7,8 +7,9 @@ ENV GO111MODULE=off
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh curl make
 
-RUN make operator-sdk
-RUN make operator-image OPERATOR_IMAGE=registry.connect.redhat.com/dotmesh/dotscience-operator:1.1.0
+# RUN make operator-sdk
+# RUN make operator-image OPERATOR_IMAGE=registry.connect.redhat.com/dotmesh/dotscience-operator:1.0.0
+RUN make operator-image OPERATOR_IMAGE=registry.connect.redhat.com/dotmesh/dotscience-operator:1.0.0
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
@@ -36,8 +37,9 @@ COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operato
 # COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operator ${OPERATOR}
 # COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operator ${OPERATOR}
 
-COPY --from=build-env /go/src/github.com/dotmesh-io/dotscience-operator/build/_output/bin/dotscience-operator ${OPERATOR}
+COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operator/build/_output/bin/dotscience-operator ${OPERATOR}
 
+# Copy endtrypoint and user_setup
 COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup
 
