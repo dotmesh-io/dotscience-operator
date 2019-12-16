@@ -4,7 +4,9 @@ OPERATOR_IMAGE ?= quay.io/dotmesh/dotscience-operator:dev
 
 .PHONY: image
 image:
-	operator-sdk build quay.io/dotmesh/dotscience-operator
+	# operator-sdk build quay.io/dotmesh/dotscience-operator
+	# docker build 
+	docker build -t $(OPERATOR_IMAGE) -f build/Dockerfile .
 
 .PHONY: image-push
 image-push: image
@@ -23,7 +25,7 @@ operator-sdk:
 
 operator-image:
 	@echo "Building dotscience-operator"
-	$(GO_ENV) $(GO_BUILD_CMD) -ldflags "$(LDFLAGS)" \
+	$(GO_ENV) $(GO_BUILD_CMD) \
 		-o ./build/_output/bin/dotscience-operator \
 		./cmd/manager
 

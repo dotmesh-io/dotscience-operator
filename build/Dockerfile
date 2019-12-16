@@ -1,4 +1,4 @@
-FROM golang:1.12.9 AS build-env
+FROM golang:alpine AS build-env
 WORKDIR /usr/local/go/src/github.com/dotmesh-io/dotscience-operator
 COPY . /usr/local/go/src/github.com/dotmesh-io/dotscience-operator
 
@@ -8,7 +8,7 @@ RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh curl make
 
 RUN make operator-sdk
-RUN make operator-image OPERATOR_IMAGE=registry.connect.redhat.com/storageos/cluster-operator:1.1.0
+RUN make operator-image OPERATOR_IMAGE=registry.connect.redhat.com/dotmesh/dotscience-operator:1.1.0
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
