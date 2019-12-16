@@ -2,6 +2,14 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
+    capabilities: Deep Insights
+    categories: "ML, Data Science, "
+    description: Machine learning model deplooyment
+    containerImage: registry.connect.redhat.com/dotscience/operator-ubi8:0.1.0
+    repository: https://github.com/dotmesh-io/dotscience-operator
+    createdAt: "2019-12-16T12:00:00Z"
+    support: Dotscience
+    certified: "true"
     alm-examples: |-
       [
         {
@@ -156,7 +164,18 @@ spec:
     type: MultiNamespace
   - supported: true
     type: AllNamespaces
-  maturity: alpha
-  provider: {}
   replaces: dotscience-operator.v0.0.0
   version: 0.1.0
+
+  maturity: stable
+  keywords: []
+  maintainers:
+    - name: support
+      email: support@dotscience.com
+  provider:
+    name: Dotscience
+  links:
+    - name: Cloud SaaS
+      url: 'https://cloud.dotscience.com'
+    - name: 'Product '
+      url: 'https://dotscience.com'

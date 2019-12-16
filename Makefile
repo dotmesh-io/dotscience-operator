@@ -4,6 +4,9 @@ GO_ENV = GOOS=linux CGO_ENABLED=0
 MACHINE = $(shell uname -m)
 OPERATOR_IMAGE ?= quay.io/dotmesh/dotscience-operator:dev
 
+OPERATOR_VERSION = 0.1.0
+METADATA_FILE = dotscience-olm-metadata.zip
+
 .PHONY: image
 image:
 	# operator-sdk build quay.io/dotmesh/dotscience-operator
@@ -37,4 +40,14 @@ install-operator-sdk: operator-sdk
 	sudo cp build/operator-sdk /usr/local/bin/
 
 gen-csv:
-	operator-sdk gen-csv
+	operator-sdk olm-catalog gen-csv --csv-version $(OPERATOR_VERSION)
+
+metadata-zip:
+	# Remove any existing metadata bundle.
+	rm -f build/_output/$(METADATA_FILE)
+	# Ensure the target path exists.
+	mkdir -p build/_output/
+	# -j strips the parent directories and adds the files at the root. This is
+	# a requirement for the openshift metadata scanner.
+	zip -j -r build/_output/$(METADATA_FILE) \
+		deploy/olm-catalog/dotscience-operator/		
