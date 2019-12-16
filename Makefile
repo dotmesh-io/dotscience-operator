@@ -47,7 +47,18 @@ metadata-zip:
 	rm -f build/_output/$(METADATA_FILE)
 	# Ensure the target path exists.
 	mkdir -p build/_output/
-	# -j strips the parent directories and adds the files at the root. This is
-	# a requirement for the openshift metadata scanner.
-	zip -j -r build/_output/$(METADATA_FILE) \
-		deploy/olm-catalog/dotscience-operator/		
+	# -j strips the parent directories and adds the files at the root. 
+	zip -j build/_output/$(METADATA_FILE) \
+		deploy/olm-catalog/dotscience-operator/0.1.0/* \
+		deploy/olm-catalog/dotscience-operator/dotscience-operator.package.yaml \
+		deploy/crds/deployer.dotscience.com_deployerservices_crd.yaml
+
+metadata-bundle-lint: metadata-zip
+	docker run -it --rm -v $(PWD)/build/_output/:/metadata \
+		-w /home/test/ \
+		python:3 bash -c "pip install operator-courier && unzip /metadata/$(METADATA_FILE) -d out && operator-courier --verbose verify --ui_validate_io out/"
+
+
+# metadata-lint:
+# 	docker run -it --rm -v $(PWD)/build/_output/dotscience-olm-metadata/:/dotscience \
+#     python:3 bash -c "pip install operator-courier && operator-courier verify --ui_validate_io /dotscience"
