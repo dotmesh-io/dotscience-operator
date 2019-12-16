@@ -36,7 +36,7 @@ COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operato
 # COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operator ${OPERATOR}
 # COPY --from=build-env /usr/local/go/src/github.com/dotmesh-io/dotscience-operator ${OPERATOR}
 
-COPY --from=build /go/src/github.com/dotmesh-io/dotscience-operator/build/_output/bin/dotscience-operator ${OPERATOR}
+COPY --from=build-env /go/src/github.com/dotmesh-io/dotscience-operator/build/_output/bin/dotscience-operator ${OPERATOR}
 
 COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup
