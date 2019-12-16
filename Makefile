@@ -2,7 +2,7 @@ SDK_VERSION = v0.13.0
 GO_BUILD_CMD = go build
 GO_ENV = GOOS=linux CGO_ENABLED=0
 MACHINE = $(shell uname -m)
-OPERATOR_IMAGE ?= quay.io/dotmesh/dotscience-operator:dev
+OPERATOR_IMAGE ?= quay.io/dotmesh/dotscience-operator:latest
 
 OPERATOR_VERSION = 0.1.0
 METADATA_FILE = dotscience-olm-metadata.zip

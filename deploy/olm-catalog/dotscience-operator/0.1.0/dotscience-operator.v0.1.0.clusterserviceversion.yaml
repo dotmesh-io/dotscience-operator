@@ -165,9 +165,6 @@ spec:
                     cpu: 100m
                     memory: 128Mi
               serviceAccountName: dotscience-operator
-      permissions:
-      - rules: null
-        serviceAccountName: Add Permission
     strategy: deployment
   installModes:
   - supported: true
