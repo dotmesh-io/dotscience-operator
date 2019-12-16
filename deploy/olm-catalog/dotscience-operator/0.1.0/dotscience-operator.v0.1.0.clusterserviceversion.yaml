@@ -1,0 +1,162 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "deployer.dotscience.com/v1",
+          "kind": "DeployerService",
+          "metadata": {
+            "name": "example-deployerservice"
+          },
+          "spec": {
+            "gatewayAddress": "cloud.dotscience.com:8800",
+            "image": "quay.io/dotmesh/dotscience-deployer:latest",
+            "name": "model-deployer",
+            "serviceAccountName": "dotscience-operator",
+            "token": "3ZZ7SY27OFICJHJWY57RHNXSMS7DUASWNCXBMPHX5QKX7KDZULKA===="
+          }
+        }
+      ]
+    capabilities: Basic Install
+  name: dotscience-operator.v0.1.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: DeployerService is the Schema for the deployerservices API
+      kind: DeployerService
+      name: deployerservices.deployer.dotscience.com
+      version: v1
+  description: Placeholder description
+  displayName: Dotscience Operator
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ""
+          - extensions
+          resources:
+          - pods
+          - pods/log
+          - services
+          - services/finalizers
+          - endpoints
+          - ingresses
+          - events
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - dotscience-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - deployer.dotscience.com
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: dotscience-operator
+      deployments:
+      - name: dotscience-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: dotscience-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: dotscience-operator
+            spec:
+              containers:
+              - command:
+                - dotscience-operator
+                env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: dotscience-operator
+                image: quay.io/dotmesh/dotscience-operator:latest
+                imagePullPolicy: Always
+                name: dotscience-operator
+                resources:
+                  limits:
+                    cpu: 600m
+                    memory: 512Mi
+                  requests:
+                    cpu: 100m
+                    memory: 128Mi
+              serviceAccountName: dotscience-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  maturity: alpha
+  provider: {}
+  replaces: dotscience-operator.v0.0.0
+  version: 0.1.0

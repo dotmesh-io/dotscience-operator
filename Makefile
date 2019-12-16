@@ -35,3 +35,6 @@ operator-image:
 # Install operator on a host. Might fail on containers that don't have sudo.
 install-operator-sdk: operator-sdk
 	sudo cp build/operator-sdk /usr/local/bin/
+
+gen-csv:
+	operator-sdk gen-csv
