@@ -89,3 +89,11 @@ To install a new version:
   ```
   make install-operator
   ```
+
+Useful links:
+
+- More info on developing operators: https://github.com/operator-framework/community-operators/blob/master/docs/testing-operators.md
+- Operator SDK CLI ref: https://github.com/operator-framework/operator-sdk/blob/master/doc/sdk-cli-reference.md
+- crc: https://code-ready.github.io/crc/
+- Running crc on Ubuntu: https://labs.consol.de/devops/linux/2019/11/29/codeready-containers-on-ubuntu.html
+- Operator framework repo: https://github.com/operator-framework/operator-sdk
