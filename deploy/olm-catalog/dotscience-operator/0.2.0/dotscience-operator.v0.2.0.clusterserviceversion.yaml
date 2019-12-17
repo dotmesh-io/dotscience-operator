@@ -186,7 +186,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: dotscience-operator
-                image: quay.io/dotmesh/dotscience-operator:latest
+                image: registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.1.0
                 imagePullPolicy: Always
                 name: dotscience-operator
                 resources:
