@@ -1,6 +1,6 @@
 # Dotscience Operator 
 
-
+Dotscience Operator deploys dotscience deployers that can in turn deploy TF, sklearn models and configure services & ingresses. 
 
 ## Local deployment to OpenShift
 
