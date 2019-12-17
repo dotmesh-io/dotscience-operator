@@ -1,0 +1,9 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorSource
+metadata:
+    name: test-operators
+    namespace: openshift-marketplace
+spec:
+    type: appregistry
+    endpoint: https://quay.io/cnr # leave it as it is
+    registryNamespace: "rusenask" # your registry namespace

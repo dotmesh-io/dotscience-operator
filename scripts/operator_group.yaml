@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha2
+kind: OperatorGroup
+metadata:
+  name: ds-operatorgroup
+  namespace: openshift-marketplace
+spec:
+  # Since our Operator supports watching all namespaces we leave the property spec.targetNamespace present but empty.
+  # This will create an OperatorGroup that instructs the Operator to watch all namespaces.
+  targetNamespaces:
+    - openshift-marketplace # Doesn't allow to set this empty

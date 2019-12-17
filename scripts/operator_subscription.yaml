@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ds-operator-subsription
+  namespace: openshift-marketplace
+spec:
+  channel: alpha
+  name: dotscience-operator
+  source: test-operators
+  sourceNamespace: openshift-marketplace
