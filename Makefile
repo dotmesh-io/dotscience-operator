@@ -4,8 +4,12 @@ GO_ENV = GOOS=linux CGO_ENABLED=0
 MACHINE = $(shell uname -m)
 OPERATOR_IMAGE ?= quay.io/dotmesh/dotscience-operator:latest
 
-OPERATOR_VERSION = 0.1.0
+OPERATOR_PREVIOUS_VERSION = 0.1.0
+OPERATOR_VERSION = 0.2.0
+
 METADATA_FILE = dotscience-olm-metadata.zip
+# Unzipped metadata dir
+METADATA_DIR = dotscience-olm-metadata
 
 .PHONY: image
 image:
@@ -40,7 +44,7 @@ install-operator-sdk: operator-sdk
 	sudo cp build/operator-sdk /usr/local/bin/
 
 gen-csv:
-	operator-sdk olm-catalog gen-csv --csv-version $(OPERATOR_VERSION)
+	operator-sdk olm-catalog gen-csv --csv-version $(OPERATOR_VERSION) --from-version $(OPERATOR_PREVIOUS_VERSION)
 
 metadata-zip:
 	# Remove any existing metadata bundle.
@@ -49,9 +53,13 @@ metadata-zip:
 	mkdir -p build/_output/
 	# -j strips the parent directories and adds the files at the root. 
 	zip -j build/_output/$(METADATA_FILE) \
-		deploy/olm-catalog/dotscience-operator/0.1.0/* \
+		deploy/olm-catalog/dotscience-operator/$(OPERATOR_VERSION)/* \
 		deploy/olm-catalog/dotscience-operator/dotscience-operator.package.yaml \
 		deploy/crds/deployer.dotscience.com_deployerservices_crd.yaml
+	
+	# also unzip it so we can do more testing or deployment
+	rm -rf build/_output/$(METADATA_DIR)
+	unzip build/_output/$(METADATA_FILE) -d build/_output/$(METADATA_DIR)
 
 metadata-bundle-lint: metadata-zip
 	docker run -it --rm -v $(PWD)/build/_output/:/metadata \
@@ -62,3 +70,7 @@ metadata-bundle-lint: metadata-zip
 # metadata-lint:
 # 	docker run -it --rm -v $(PWD)/build/_output/dotscience-olm-metadata/:/dotscience \
 #     python:3 bash -c "pip install operator-courier && operator-courier verify --ui_validate_io /dotscience"
+
+
+push-app:	
+	operator-courier push build/_output/dotscience-olm-metadata "$(QUAY_NAMESPACE)" "$(PACKAGE_NAME)" "$(PACKAGE_VERSION)" "$(QUAY_TOKEN)"
