@@ -76,3 +76,33 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+    - ''
+    - route.openshift.io
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  resources:
+    - routes
+- apiGroups:
+    - ''
+    - route.openshift.io
+  verbs:
+    - create  
+  resources:
+    - routes/custom-host
+- apiGroups:
+    - ''
+    - route.openshift.io
+  verbs:
+    - get
+    - list
+    - watch  
+  resources:
+    - routes/status
