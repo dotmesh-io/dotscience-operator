@@ -4,20 +4,28 @@
 
 ## Local deployment to OpenShift
 
-1. Fill env variables in scripts/operator_courier_env.sh
-2. Push operator bundle to your quay app repo:
+1. Generate csv from the manifests (operator, role_binding, role, service_account and crds/):
+
+  ```
+  make gen-csv
+  ```
+
+2. Manually edit the last one to add `displayName: Dotscience Operator` in the spec.customresourcedefinitions.owned (TODO: somehow figure it out how to do this automatically?)
+3. Probably just remove `replaces` from the clusterserviceversion.yaml file (it doesn't like it when it's there but there's no published previous version)
+3. Fill env variables in scripts/operator_courier_env.sh
+4. Push operator bundle to your quay app repo:
 
   ```
   make push-app
   ```
 
-3. Create operator source:
+5. Create operator source:
 
   ```
   kubectl apply -f scripts/operator_source.yaml
   ```
 
-4. Check the source:
+6. Check the source:
 
 
   ```
@@ -44,7 +52,7 @@ redhat-operators      Red Hat Operators     grpc   Red Hat     24d
 test-operators                              grpc               79s
   ```
 
-5. View available operators:
+7. View available operators:
 
   ```
   kubectl get opsrc test-operators -o=custom-columns=NAME:.metadata.name,PACKAGES:.status.packages -n openshift-marketplace 
@@ -52,25 +60,25 @@ NAME             PACKAGES
 test-operators   dotscience-operator
   ```
 
-6. Create operator group. An OperatorGroup is used to denote which namespaces your Operator should be watching. It must exist in the namespace where your operator should be deployed:
+8. Create operator group. An OperatorGroup is used to denote which namespaces your Operator should be watching. It must exist in the namespace where your operator should be deployed:
 
   ```
   kubectl apply -f scripts/operator_group.yaml
   ```
 
-7. The last piece ties together all of the previous steps. A Subscription is created to the operator:
+9. The last piece ties together all of the previous steps. A Subscription is created to the operator:
 
   ```
   kubectl apply -f scripts/operator_subscription.yaml
   ```
 
-8. View operator health
+10. View operator health
 
   ```
   kubectl get clusterserviceversion -n openshift-marketplace
   ```
 
-8. Once you have it, you can iterate rapidly by
+11. Once you have it, you can iterate rapidly by
 
   1. uninstalling the operator from operatorhub
   2. rerunning the operator-courier push, just with an incremented release number (`export PACKAGE_VERSION=0.2.0`)
