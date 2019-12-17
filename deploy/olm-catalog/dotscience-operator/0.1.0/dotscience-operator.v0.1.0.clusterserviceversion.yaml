@@ -37,6 +37,7 @@ spec:
       kind: DeployerService
       name: deployerservices.deployer.dotscience.com
       version: v1
+      displayName: Dotscience Operator
   description: |
     ## About the managed application
 
