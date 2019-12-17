@@ -27,7 +27,7 @@ metadata:
     description: ML model deployment operator
     repository: ""
     support: ""
-  name: dotscience-operator.v0.1.0
+  name: dotscience-operator.v0.2.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -192,7 +192,8 @@ spec:
   maturity: stable
   provider:
     name: Dotscience
+  replaces: dotscience-operator.v0.1.0
   selector:
     matchLabels:
       app: dotscience-deployer
-  version: 0.1.0
+  version: 0.2.0
