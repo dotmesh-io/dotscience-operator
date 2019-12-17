@@ -74,3 +74,13 @@ metadata-bundle-lint: metadata-zip
 
 push-app:	
 	operator-courier push build/_output/dotscience-olm-metadata "$(QUAY_NAMESPACE)" "$(PACKAGE_NAME)" "$(PACKAGE_VERSION)" "$(QUAY_TOKEN)"
+
+
+delete-operator:
+	kubectl delete -f scripts/test_operator
+	kubectl delete deployment dotscience-operator
+
+install-operator:
+	kubectl apply -f scripts/test_operator/operator_source.yaml
+	kubectl apply -f scripts/test_operator/operator_group.yaml
+	kubectl apply -f scripts/test_operator/operator_subscription.yaml

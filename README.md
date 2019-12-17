@@ -76,3 +76,16 @@ test-operators   dotscience-operator
   2. rerunning the operator-courier push, just with an incremented release number (`export PACKAGE_VERSION=0.2.0`)
   3. deleting the pod in the openshift-marketplace namespace
   4. installing the new version when it shows up
+
+
+To delete operator you will need to remove group, source, subscription and the actual deployment. Otherwise OpenShift doesn't appear to be picking up a new version:
+
+  ```
+  make delete-operator
+  ```
+
+To install a new version:
+
+  ```
+  make install-operator
+  ```
