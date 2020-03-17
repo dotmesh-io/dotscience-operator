@@ -2,6 +2,7 @@ package deployerservice
 
 import (
 	"context"
+	"os"
 	"time"
 
 	deployerv1 "github.com/dotmesh-io/dotscience-operator/pkg/apis/deployer/v1"
@@ -19,6 +20,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
+)
+
+// Deployer image override for offline mode
+const (
+	EnvRelatedImage = "RELATED_IMAGE_DEPLOYER"
 )
 
 var log = logf.Log.WithName("controller_deployerservice")
@@ -109,8 +115,12 @@ func (r *ReconcileDeployerService) Reconcile(request reconcile.Request) (reconci
 		return reconcile.Result{}, err
 	}
 
+	opts := &podOpts{
+		image: os.Getenv(EnvRelatedImage),
+	}
+
 	// Define a new Pod object
-	pod := newPodForCR(instance)
+	pod := newPodForCR(opts, instance)
 
 	// Set DeployerService instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
@@ -150,8 +160,17 @@ func (r *ReconcileDeployerService) Reconcile(request reconcile.Request) (reconci
 	return reconcileResult, nil
 }
 
+type podOpts struct {
+	image string
+}
+
 // newPodForCR returns a busybox pod with the same name/namespace as the cr
-func newPodForCR(cr *deployerv1.DeployerService) *corev1.Pod {
+func newPodForCR(opts *podOpts, cr *deployerv1.DeployerService) *corev1.Pod {
+
+	if opts.image == "" {
+		opts.image = cr.Spec.Image
+	}
+
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -166,7 +185,7 @@ func newPodForCR(cr *deployerv1.DeployerService) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:    cr.Spec.Name,
-					Image:   cr.Spec.Image,
+					Image:   opts.image,
 					Command: []string{"ds-deployer", "run"},
 					Env: []corev1.EnvVar{
 						{
