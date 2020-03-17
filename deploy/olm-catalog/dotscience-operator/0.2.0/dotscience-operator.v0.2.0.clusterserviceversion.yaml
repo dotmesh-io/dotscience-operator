@@ -8,7 +8,7 @@ metadata:
           "apiVersion": "deployer.dotscience.com/v1",
           "kind": "DeployerService",
           "metadata": {
-            "name": "example-deployerservice"
+            "name": "model-deployerservice"
           },
           "spec": {
             "gatewayAddress": "cloud.dotscience.com:8800",
@@ -22,7 +22,7 @@ metadata:
     capabilities: Auto Pilot
     categories: Big Data,  AI/Machine Learning, Developer Tools
     certified: "true"
-    containerImage: "registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.1.0"
+    containerImage: "registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.2.0"
     createdAt: 2020-02-13T15:10:31.000Z
     description: ML model deployment operator
     repository: "https://github.com/dotmesh-io/dotscience-operator"
@@ -212,7 +212,9 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: dotscience-operator
-                image: registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.1.0
+                - name: RELATED_IMAGE_DEPLOYER
+                  value: TODO
+                image: registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.2.0
                 imagePullPolicy: Always
                 name: dotscience-operator
                 resources:
