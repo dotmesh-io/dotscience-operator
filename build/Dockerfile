@@ -13,7 +13,7 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 LABEL name="Dotscience Operator" \
       vendor="Dotscience." \
-      version="v0.1.0" \
+      version="v0.2.0" \
       release="1" \
       distribution-scope="public" \
       architecture="x86_64" \
