@@ -15,7 +15,7 @@ spec:
       serviceAccountName: dotscience-operator
       containers:
         - name: dotscience-operator
-          image: registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.1.0
+          image: registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.2.0
           command:
           - dotscience-operator
           imagePullPolicy: Always

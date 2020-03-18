@@ -213,7 +213,7 @@ spec:
                 - name: OPERATOR_NAME
                   value: dotscience-operator
                 - name: RELATED_IMAGE_DEPLOYER
-                  value: TODO
+                  value: registry.connect.redhat.com/dotscience/dotscience-deployer-ubi8:0.8.0
                 image: registry.connect.redhat.com/dotscience/dotscience-operator-ubi8:0.2.0
                 imagePullPolicy: Always
                 name: dotscience-operator
