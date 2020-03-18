@@ -54,8 +54,9 @@ metadata-zip:
 	# -j strips the parent directories and adds the files at the root. 
 	zip -j build/_output/$(METADATA_FILE) \
 		deploy/olm-catalog/dotscience-operator/$(OPERATOR_VERSION)/* \
-		deploy/olm-catalog/dotscience-operator/dotscience-operator.package.yaml \
-		deploy/crds/deployer.dotscience.com_deployerservices_crd.yaml
+		deploy/olm-catalog/dotscience-operator/dotscience-operator.package.yaml
+	
+	# deploy/crds/deployer.dotscience.com_deployerservices_crd.yaml
 	
 	# also unzip it so we can do more testing or deployment
 	rm -rf build/_output/$(METADATA_DIR)
